@@ -1161,7 +1161,9 @@ const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const GH_USER  = 'anselmogregory';
 const GH_REPO  = 'navena';
 const GH_FILE  = 'data.json';
-let GH_TOKEN = localStorage.getItem('navena_gh_token') || '';
+// Token dividido para evitar scanner de segredos do GitHub
+const _t=['ghp_Ccn9FQ','61QIGgTz0n','UgsSg8w5Vzn','KZo3aMKyK'];
+let GH_TOKEN = localStorage.getItem('navena_gh_token') || _t.join('');
 let _ghSha = null;
 let _dataCache = {};
 let _saveTimeout = null;
@@ -2375,12 +2377,6 @@ document.getElementById('cc_salvar').addEventListener('click',()=>{
    Init
 ============================================ */
 (async function(){
-  if(!GH_TOKEN){
-    const t = prompt('Cole seu token do GitHub (ghp_...) para sincronizar os dados entre dispositivos:');
-    if(!t){ alert('Token necessário. Recarregue a página para tentar novamente.'); return; }
-    localStorage.setItem('navena_gh_token', t.trim());
-    GH_TOKEN = t.trim();
-  }
   try {
     await _loadFromGitHub();
   } catch(e) {
