@@ -2351,4 +2351,50 @@ document.getElementById('cc_salvar').addEventListener('click',()=>{
   const duracaoMeses=+document.getElementById('cc_duracao').value||3;
   const dataInicio=document.getElementById('cc_dataInicio').value;
   if(!nome){alert('Informe o nome do cliente.');return;}
-  if(!valor){alert('Informe o v        
+  if(!valor){alert('Informe o v        alor do contrato.');return;}
+  if(!dataInicio){alert('Informe a data de início.');return;}
+  const emailCliente=document.getElementById('cc_emailCliente').value.trim();
+  const fimDate=new Date(dataInicio);
+  fimDate.setMonth(fimDate.getMonth()+duracaoMeses);
+  const dataFim=fimDate.toISOString().split('T')[0];
+  const list=loadContratos();
+  const c={id:uid(),clienteNome:nome,servico,valor,diaPagamento,duracaoMeses,
+    dataInicio,dataFim,emailCliente,criadoEm:new Date().toISOString(),
+    enviado:false,assinado:false,assinadoEm:null};
+  list.push(c);
+  saveContratos(list);
+  const link=gerarLink(c);
+  const box=document.getElementById('cc_linkBox');
+  box.style.display='block';
+  box.innerHTML=`<strong>✅ Contrato criado!</strong><br><small style="color:var(--muted)">Copie o link abaixo e envie ao cliente para preencher e assinar:</small><br><input type="text" value="${link}" readonly style="width:100%;margin-top:8px;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:11px;background:#f8fafc" onclick="this.select()"><br><button class="btn btn-sm btn-primary" style="margin-top:8px" onclick="navigator.clipboard.writeText(this.previousElementSibling.previousElementSibling.value).then(()=>{this.textContent='✓ Copiado!'})">Copiar link</button>`;
+  document.getElementById('cc_salvar').textContent='Atualizar';
+  renderContratos();
+});
+
+/* ============================================
+   Init
+============================================ */
+(async function(){
+  if(!GH_TOKEN){
+    const t = prompt('Cole seu token do GitHub (ghp_...) para sincronizar os dados entre dispositivos:');
+    if(!t){ alert('Token necessário. Recarregue a página para tentar novamente.'); return; }
+    localStorage.setItem('navena_gh_token', t.trim());
+    GH_TOKEN = t.trim();
+  }
+  try {
+    await _loadFromGitHub();
+  } catch(e) {
+    console.error('Erro ao carregar dados do GitHub:', e);
+  }
+  try {
+    refreshStateFromStorage();
+    applyTheme(state.profile.theme || 'light');
+    renderProfile();
+    renderAll();
+  } catch(e) {
+    console.error('Erro ao renderizar:', e);
+  }
+})();
+</script>
+</body>
+</html>
