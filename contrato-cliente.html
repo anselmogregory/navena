@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Navena · Contrato de Prestação de Serviços</title>
+<style>
+:root{
+  --navy:#0b1f3a;
+  --navy2:#1a3a6b;
+  --blue:#2563eb;
+  --blue-light:#dbeafe;
+  --green:#16a34a;
+  --green-light:#dcfce7;
+  --text:#1a2440;
+  --muted:#6b7689;
+  --border:#e3e8f0;
+  --bg:#f4f6fb;
+  --card:#fff;
+  --shadow:0 2px 12px rgba(15,23,42,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
+
+/* Header */
+.header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);color:#fff;padding:32px 24px 28px;text-align:center}
+.logo-mark{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#3b82f6,#22d3ee);display:inline-flex;align-items:center;justify-content:center;font-weight:900;font-size:26px;color:#fff;margin-bottom:12px}
+.header h1{font-size:22px;font-weight:800;letter-spacing:.5px}
+.header p{font-size:13px;opacity:.75;margin-top:4px}
+
+/* Steps */
+.steps{display:flex;justify-content:center;gap:0;margin:28px auto;max-width:520px;padding:0 20px}
+.step{flex:1;display:flex;flex-direction:column;align-items:center;position:relative}
+.step:not(:last-child)::after{content:'';position:absolute;top:16px;left:calc(50% + 16px);right:calc(-50% + 16px);height:2px;background:var(--border)}
+.step.done::after{background:var(--green)}
+.step-dot{width:32px;height:32px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--muted);z-index:1}
+.step.active .step-dot{background:var(--blue);color:#fff}
+.step.done .step-dot{background:var(--green);color:#fff}
+.step-label{font-size:11px;color:var(--muted);margin-top:6px;font-weight:600;text-align:center}
+.step.active .step-label{color:var(--blue);font-weight:700}
+.step.done .step-label{color:var(--green)}
+
+/* Container */
+.container{max-width:700px;margin:0 auto;padding:0 20px 60px}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);margin-bottom:20px;overflow:hidden}
+.card-head{padding:18px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.card-head h2{font-size:15px;font-weight:700;color:var(--text)}
+.card-head .ico{width:32px;height:32px;border-radius:8px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:16px}
+.card-body{padding:22px 24px}
+
+/* Summary strip */
+.summary-strip{background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border-radius:12px;padding:18px 22px;margin-bottom:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px}
+.ss-item .lbl{font-size:11px;opacity:.65;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.ss-item .val{font-size:17px;font-weight:800;margin-top:2px}
+
+/* Form */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}}
+.field label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px}
+.field input,.field select,.field textarea{
+  width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;
+  font:inherit;font-size:14px;color:var(--text);outline:none;background:#fff;
+  transition:border-color .15s
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue)}
+.field.full{grid-column:1/-1}
+.field textarea{resize:vertical;min-height:70px}
+.field .help{font-size:11px;color:var(--muted);margin-top:4px}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:10px;font:inherit;font-weight:700;cursor:pointer;transition:all .15s;border:0;font-size:14px}
+.btn-primary{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;box-shadow:0 4px 12px rgba(37,99,235,.3)}
+.btn-primary:hover{background:linear-gradient(135deg,#1d4ed8,#1e40af);transform:translateY(-1px)}
+.btn-secondary{background:var(--bg);color:var(--text);border:1.5px solid var(--border)}
+.btn-secondary:hover{background:#edf2fb;border-color:var(--blue)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-row{display:flex;gap:12px;justify-content:flex-end;margin-top:22px;flex-wrap:wrap}
+
+/* Alert */
+.alert{padding:12px 16px;border-radius:10px;font-size:13px;display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;border:1px solid}
+.alert-info{background:var(--blue-light);border-color:#93c5fd;color:#1e40af}
+.alert-success{background:var(--green-light);border-color:#86efac;color:#166534}
+
+/* Contract preview page */
+#page-contrato{display:none}
+.contract-doc{background:#fff;border:1px solid var(--border);border-radius:12px;padding:40px;box-shadow:var(--shadow);line-height:1.8;font-size:14px;color:#1a2440}
+.contract-doc h1{font-size:16px;font-weight:800;text-align:center;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.contract-doc .subtitle{font-size:13px;text-align:center;color:var(--muted);margin-bottom:28px}
+.contract-doc h2{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin:20px 0 8px;color:var(--navy)}
+.contract-doc p{margin-bottom:10px}
+.contract-doc ul{margin:8px 0 10px 20px}
+.contract-doc ul li{margin-bottom:4px}
+.contract-doc .parties{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:20px 0;padding:18px;background:var(--bg);border-radius:10px;border:1px solid var(--border)}
+.contract-doc .party-block .party-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:8px}
+.contract-doc .party-block p{font-size:13px;margin-bottom:4px}
+.contract-doc .sig-block{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+.contract-doc .sig-line{border-bottom:1.5px solid var(--text);margin-bottom:6px;height:40px}
+.contract-doc .sig-name{font-size:13px;font-weight:700;text-align:center}
+.contract-doc .sig-role{font-size:11px;color:var(--muted);text-align:center}
+@media(max-width:600px){.contract-doc .parties,.contract-doc .sig-block{grid-template-columns:1fr}}
+
+/* Confirmation */
+#page-confirmacao{display:none;text-align:center;padding:40px 20px}
+.conf-icon{font-size:56px;margin-bottom:16px}
+.conf-code{background:var(--bg);border:2px dashed var(--border);border-radius:10px;padding:16px 20px;font-size:18px;font-weight:800;letter-spacing:3px;color:var(--navy);margin:16px 0;font-family:monospace}
+
+/* Print */
+@media print{
+  .header,.steps,.no-print{display:none!important}
+  .container{max-width:100%;padding:0}
+  .contract-doc{border:0;box-shadow:none;padding:20px}
+  body{background:#fff}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-mark">N</div>
+  <h1>NAVENA · Contrato de Prestação de Serviços</h1>
+  <p>Preencha seus dados para gerar o contrato personalizado</p>
+</div>
+
+<div class="steps" id="stepsBar">
+  <div class="step active" id="step1El"><div class="step-dot">1</div><div class="step-label">Seus Dados</div></div>
+  <div class="step" id="step2El"><div class="step-dot">2</div><div class="step-label">Contrato</div></div>
+  <div class="step" id="step3El"><div class="step-dot">3</div><div class="step-label">Confirmação</div></div>
+</div>
+
+<div class="container">
+
+  <!-- PAGE 1: FORMULÁRIO -->
+  <div id="page-form">
+
+    <div id="summaryStrip" class="summary-strip" style="display:none">
+      <div class="ss-item"><div class="lbl">Empresa</div><div class="val" id="ss_nome">—</div></div>
+      <div class="ss-item"><div class="lbl">Serviço</div><div class="val" id="ss_servico">—</div></div>
+      <div class="ss-item"><div class="lbl">Valor Mensal</div><div class="val" id="ss_valor">—</div></div>
+      <div class="ss-item"><div class="lbl">Duração</div><div class="val" id="ss_duracao">—</div></div>
+    </div>
+
+    <div class="alert alert-info">
+      <span>ℹ️</span>
+      <span>Preencha abaixo os dados da sua empresa (ou pessoais, se pessoa física). Essas informações serão inseridas no contrato de prestação de serviços.</span>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div class="ico">🏢</div><h2>Dados do Contratante</h2></div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="field full">
+            <label>Razão Social / Nome Completo *</label>
+            <input id="f_razaoSocial" placeholder="Ex: PR Multimarcas Ltda">
+          </div>
+          <div class="field">
+            <label>CNPJ (empresa) ou CPF (pessoa física) *</label>
+            <input id="f_cnpj" placeholder="00.000.000/0001-00">
+          </div>
+          <div class="field">
+            <label>E-mail *</label>
+            <input type="email" id="f_email" placeholder="contato@empresa.com">
+            <div class="help">Este e-mail receberá o link de assinatura digital.</div>
+          </div>
+          <div class="field full">
+            <label>Endereço completo *</label>
+            <input id="f_endereco" placeholder="Rua, número - Bairro, Cidade/UF">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div class="ico">👤</div><h2>Dados do Representante Legal</h2></div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="field full">
+            <label>Nome Completo do Representante *</label>
+            <input id="f_representante" placeholder="Nome do sócio/responsável">
+          </div>
+          <div class="field">
+            <label>Nacionalidade</label>
+            <input id="f_nacionalidade" value="Brasileiro(a)" placeholder="Brasileiro(a)">
+          </div>
+          <div class="field">
+            <label>Profissão / Cargo</label>
+            <input id="f_profissao" placeholder="Ex: Empresário, Diretor">
+          </div>
+          <div class="field">
+            <label>CPF do Representante *</label>
+            <input id="f_cpfRep" placeholder="000.000.000-00">
+          </div>
+          <div class="field">
+            <label>Estado Civil</label>
+            <select id="f_estadoCivil">
+              <option>Solteiro(a)</option>
+              <option>Casado(a)</option>
+              <option>Divorciado(a)</option>
+              <option>Viúvo(a)</option>
+              <option>União Estável</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div class="ico">📅</div><h2>Data e Local de Assinatura</h2></div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="field">
+            <label>Cidade de assinatura</label>
+            <input id="f_cidade" value="Rio de Janeiro" placeholder="Rio de Janeiro">
+          </div>
+          <div class="field">
+            <label>Data de assinatura</label>
+            <input type="date" id="f_dataAssinatura">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row no-print">
+      <button class="btn btn-primary" id="btnGerarContrato">Gerar Contrato →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 2: CONTRATO -->
+  <div id="page-contrato">
+    <div class="alert alert-success no-print">
+      <span>✅</span>
+      <span>Contrato gerado com sucesso! Revise o documento abaixo e clique em <strong>Imprimir / Salvar PDF</strong> para baixar.</span>
+    </div>
+
+    <div class="btn-row no-print" style="margin-bottom:16px">
+      <button class="btn btn-secondary" id="btnVoltarForm">← Voltar e editar</button>
+      <button class="btn btn-primary" onclick="window.print()">🖨 Imprimir / Salvar PDF</button>
+      <button class="btn btn-primary" id="btnConfirmar" style="background:linear-gradient(135deg,#16a34a,#15803d)">✍ Enviar para Assinatura</button>
+    </div>
+
+    <div class="contract-doc" id="contractDoc"></div>
+
+    <div class="btn-row no-print" style="margin-top:20px">
+      <button class="btn btn-secondary" id="btnVoltarForm2">← Voltar e editar</button>
+      <button class="btn btn-primary" onclick="window.print()">🖨 Imprimir / Salvar PDF</button>
+      <button class="btn btn-primary" id="btnConfirmar2" style="background:linear-gradient(135deg,#16a34a,#15803d)">✍ Enviar para Assinatura</button>
+    </div>
+  </div>
+
+  <!-- PAGE 3: CONFIRMAÇÃO -->
+  <div id="page-confirmacao">
+    <div class="conf-icon">🎉</div>
+    <h2 style="font-size:22px;font-weight:800;margin-bottom:8px">Contrato enviado!</h2>
+    <p style="color:var(--muted);margin-bottom:20px">Seus dados foram registrados. A Navena entrará em contato para finalizar a assinatura.</p>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:6px">Guarde seu código de confirmação:</p>
+    <div class="conf-code" id="confCode">—</div>
+    <p style="font-size:12px;color:var(--muted)">Apresente este código caso seja solicitado pela equipe Navena.</p>
+    <div style="margin-top:28px">
+      <button class="btn btn-secondary" onclick="window.print()">🖨 Imprimir contrato</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============ Leitura dos parâmetros ============ */
+let contratoData = {};
+try{
+  const params = new URLSearchParams(window.location.search);
+  const d = params.get('d');
+  if(d) contratoData = JSON.parse(decodeURIComponent(escape(atob(d))));
+}catch(e){ console.warn('Erro ao decodificar parâmetros:', e); }
+
+const fmt = n => 'R$ '+(Number(n)||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+/* ============ Preenche o resumo do topo ============ */
+if(contratoData.nome){
+  document.getElementById('summaryStrip').style.display='grid';
+  document.getElementById('ss_nome').textContent = contratoData.nome || '—';
+  document.getElementById('ss_servico').textContent = contratoData.servico || '—';
+  document.getElementById('ss_valor').textContent = fmt(contratoData.valor);
+  document.getElementById('ss_duracao').textContent = (contratoData.meses||'—')+' mês(es)';
+}
+// Pré-preencher email do cliente se veio no link
+if(contratoData.emailCliente){
+  document.getElementById('f_email').value = contratoData.emailCliente;
+}
+
+/* Data padrão de assinatura = hoje */
+document.getElementById('f_dataAssinatura').value = new Date().toISOString().split('T')[0];
+
+/* ============ Helpers ============ */
+function numPorExtenso(n){
+  const un=['zero','um','dois','três','quatro','cinco','seis','sete','oito','nove',
+    'dez','onze','doze','treze','quatorze','quinze','dezesseis','dezessete','dezoito','dezenove'];
+  const dz=['','','vinte','trinta','quarenta','cinquenta','sessenta','setenta','oitenta','noventa'];
+  const ct=['','cem','duzentos','trezentos','quatrocentos','quinhentos','seiscentos','setecentos','oitocentos','novecentos'];
+  n=Math.round(n);
+  if(n<20) return un[n];
+  if(n<100){const d=Math.floor(n/10),u=n%10;return dz[d]+(u?' e '+un[u]:'');}
+  if(n<1000){const c=Math.floor(n/100),r=n%100;return(c===1&&r===0?'cem':ct[c])+(r?' e '+numPorExtenso(r):'');}
+  if(n<1000000){const m=Math.floor(n/1000),r=n%1000;return(m===1?'um mil':numPorExtenso(m)+' mil')+(r?' e '+numPorExtenso(r):'');}
+  return n.toLocaleString('pt-BR');
+}
+function diaExtenso(n){
+  const d=['','primeiro','dois','três','quatro','cinco','seis','sete','oito','nove','dez',
+    'onze','doze','treze','quatorze','quinze','dezesseis','dezessete','dezoito','dezenove','vinte',
+    'vinte e um','vinte e dois','vinte e três','vinte e quatro','vinte e cinco','vinte e seis',
+    'vinte e sete','vinte e oito','vinte e nove','trinta','trinta e um'];
+  return d[n]||n;
+}
+function mesesPorExtenso(n){
+  const m=['','um','dois','três','quatro','cinco','seis','sete','oito','nove','dez','onze','doze'];
+  const mc=['','Um','Dois','Três','Quatro','Cinco','Seis','Sete','Oito','Nove','Dez','Onze','Doze'];
+  return {min:m[n]||n, cap:mc[n]||n};
+}
+function fmtDate(s){
+  if(!s) return '—';
+  const [y,m,d]=s.split('-');
+  const meses=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  return `${parseInt(d)} de ${meses[parseInt(m)-1]} de ${y}`;
+}
+function servicoDescricao(s){
+  const map={
+    'Completo':'gestão de tráfego pago e social media, nas plataformas Meta Ads, Google Ads e redes sociais',
+    'Tráfego Pago':'gestão de tráfego pago nas plataformas Meta Ads e Google Ads',
+    'Social Media':'gestão de redes sociais, incluindo planejamento e publicação de conteúdo',
+    'Audiovisual':'produção audiovisual e gestão de conteúdo em vídeo para redes sociais'
+  };
+  return map[s]||s;
+}
+function servicoItens(s){
+  const base=[
+    'Planejamento estratégico via grupo de WhatsApp;',
+    'Suporte via WhatsApp em dias úteis, das 9h às 18h;',
+    'Monitoramento e relatórios periódicos;',
+    'Análise de dados e otimização contínua.',
+  ];
+  const map={
+    'Completo':[
+      'Criação, gestão e otimização de campanhas de tráfego pago (Meta Ads, Google Ads);',
+      'Planejamento e publicação de conteúdo para redes sociais;',
+      'Gestão de perfil nas redes sociais (feed, reels e/ou outras mídias, conforme alinhado);',
+      'Configuração de ferramentas (Google Analytics, Tag Manager, Data Studio, etc.);',
+      ...base
+    ],
+    'Tráfego Pago':[
+      'Criação, gestão e otimização de campanhas de tráfego pago (Meta Ads, Google Ads);',
+      'Configuração de ferramentas (Google Analytics, Tag Manager, Data Studio, etc.);',
+      ...base
+    ],
+    'Social Media':[
+      'Planejamento e publicação de conteúdo para redes sociais;',
+      'Gestão de perfil nas redes sociais (feed, reels e/ou outras mídias, conforme alinhado);',
+      ...base
+    ],
+    'Audiovisual':[
+      'Produção de conteúdo audiovisual para redes sociais;',
+      'Edição e publicação de vídeos conforme calendário editorial acordado;',
+      ...base
+    ]
+  };
+  return (map[s]||base).map(i=>`<li>${i}</li>`).join('');
+}
+
+/* ============ Geração do HTML do contrato ============ */
+function gerarContratoHTML(f){
+  const cd = contratoData;
+  const valorExt = numPorExtenso(cd.valor||0);
+  const diaExt = diaExtenso(cd.diaPagamento||20);
+  const mExt = mesesPorExtenso(cd.meses||3);
+  const dataAssinatura = fmtDate(f.dataAssinatura);
+
+  return `
+    <h1>Contrato de Prestação de Serviços de Marketing Digital</h1>
+    <div class="subtitle">e Gestão de Tráfego Pago</div>
+
+    <div class="parties">
+      <div class="party-block">
+        <div class="party-label">CONTRATADO</div>
+        <p><strong>Agência Navena</strong></p>
+        <p>CNPJ: 47.743.793/0001-00</p>
+        <p>E-mail: agencianavena@gmail.com</p>
+        <p>Endereço: Rua Divisória, 80 – Bento Ribeiro, Rio de Janeiro/RJ</p>
+        <p>Representado por: <strong>Grégory Anselmo Almeida</strong></p>
+        <p>Brasileiro · Empresário · CPF 706.715.691-20 · Solteiro</p>
+      </div>
+      <div class="party-block">
+        <div class="party-label">CONTRATANTE</div>
+        <p><strong>${f.razaoSocial}</strong></p>
+        <p>CNPJ/CPF: ${f.cnpj}</p>
+        <p>E-mail: ${f.email}</p>
+        <p>Endereço: ${f.endereco}</p>
+        <p>Representado por: <strong>${f.representante}</strong></p>
+        <p>${f.nacionalidade} · ${f.profissao} · CPF ${f.cpfRep} · ${f.estadoCivil}</p>
+      </div>
+    </div>
+
+    <h2>Cláusula Primeira – Do Objeto</h2>
+    <p>1.1. O presente contrato estabelece a prestação de serviços de marketing digital, incluindo ${servicoDescricao(cd.servico||'Completo')}, do CONTRATANTE.</p>
+    <p>1.2. Os serviços incluem:</p>
+    <ul>${servicoItens(cd.servico||'Completo')}</ul>
+
+    <h2>Cláusula Segunda – Do Prazo e Renovação</h2>
+    <p>2.1. O presente contrato terá vigência inicial de ${mExt.cap} (${mExt.cap}) ${(cd.meses||3)===1?'mês':'meses'}, contados da data de sua assinatura.</p>
+    <p>2.2. Findo o prazo inicial, o contrato será renovado automaticamente por iguais períodos sucessivos, salvo manifestação expressa em contrário de qualquer das partes, a ser comunicada com antecedência mínima de 15 (quinze) dias do término da vigência.</p>
+    <p>2.3. A ausência de manifestação dentro do prazo estipulado implica concordância com a renovação automática.</p>
+
+    <h2>Cláusula Terceira – Da Confidencialidade</h2>
+    <p>As partes comprometem-se a manter sigilo sobre todas as informações e dados acessados em decorrência deste contrato, mesmo após seu término.</p>
+
+    <h2>Cláusula Quarta – Das Obrigações do Contratado</h2>
+    <p>4.1. Gerir e otimizar campanhas de tráfego pago.</p>
+    <p>4.2. Planejar e publicar conteúdos nas redes sociais do CONTRATANTE.</p>
+    <p>4.3. Entregar relatórios periódicos de desempenho.</p>
+    <p>4.4. Configurar corretamente as ferramentas necessárias.</p>
+    <p>4.5. Orientar sobre estratégias de marketing digital e posicionamento.</p>
+    <p>4.6. Não garante retorno financeiro específico, pois os resultados dependem de fatores externos. Contudo, compromete-se a aplicar boas práticas, analisar dados e propor melhorias contínuas.</p>
+    <p>4.7. O CONTRATADO não se responsabiliza por falhas externas (plataformas, hospedagem, navegadores, etc.).</p>
+
+    <h2>Cláusula Quinta – Das Permissões</h2>
+    <p>O CONTRATANTE deverá conceder acesso administrativo às contas de anúncios, redes sociais, Business Manager e demais ferramentas necessárias para a execução dos serviços.</p>
+
+    <h2>Cláusula Sexta – Do Vínculo Empregatício</h2>
+    <p>Não há vínculo empregatício entre as partes. O CONTRATADO é responsável por sua equipe e obrigações trabalhistas.</p>
+
+    <h2>Cláusula Sétima – Das Obrigações do Contratante</h2>
+    <p>Fornecer informações e materiais necessários, respeitar prazos de aprovação de conteúdos e campanhas, efetuar pagamentos em dia e manter um responsável disponível para comunicação.</p>
+
+    <h2>Cláusula Oitava – Do Valor e Forma de Pagamento</h2>
+    <p>8.1. O valor mensal pelos serviços será de <strong>R$ ${(cd.valor||0).toLocaleString('pt-BR',{minimumFractionDigits:2})} (${valorExt} reais)</strong>.</p>
+    <p>8.2. O vencimento será todo dia ${cd.diaPagamento||20} (${diaExt.charAt(0).toUpperCase()+diaExt.slice(1)}) de cada mês.</p>
+    <p>8.3. Atrasos sujeitam-se a multa de 1% e juros de 10% ao mês.</p>
+    <p>8.4. Pagamento via Pix/Asaas ou conforme combinado.</p>
+    <p>8.5. Atraso superior a 15 dias autoriza suspensão dos serviços. Atraso superior a 20 dias autoriza rescisão imediata.</p>
+    <p>8.6. Reajustes somente mediante acordo formal entre as partes.</p>
+
+    <h2>Cláusula Nona – Da Rescisão Contratual</h2>
+    <p>9.1. Qualquer parte pode rescindir o contrato mediante aviso prévio de 15 dias.</p>
+    <p>9.2. Rescisão sem aviso implica multa de 20% sobre o saldo restante.</p>
+    <p>9.3. Rescisão por comum acordo não gera multa.</p>
+    <p>9.4. O CONTRATADO pode rescindir imediatamente em caso de descumprimento ou atraso superior a 20 dias.</p>
+
+    <h2>Cláusula Décima – Custos de Anúncios</h2>
+    <p>O investimento em anúncios é de responsabilidade exclusiva do CONTRATANTE, pago diretamente às plataformas.</p>
+
+    <h2>Cláusula Décima Primeira – Condições Gerais</h2>
+    <p>11.1. O CONTRATADO possui autonomia de execução e pode atender outros clientes simultaneamente.</p>
+    <p>11.2. Não há garantia de resultados financeiros. Serviços extras não previstos serão cobrados à parte.</p>
+    <p>11.3. O CONTRATADO poderá utilizar nome, marca e métricas (não financeiras) em portfólio.</p>
+
+    <h2>Cláusula Décima Segunda – Dos Bônus</h2>
+    <p>Poderão ser oferecidos bônus como edição de criativos, consultorias ou ajustes estratégicos sem custo adicional.</p>
+
+    <h2>Cláusula Décima Terceira – Do Foro</h2>
+    <p>Fica eleito o foro da comarca de Rio de Janeiro/RJ para dirimir quaisquer controvérsias.</p>
+
+    <h2>Cláusula Décima Quarta – Da Remuneração Variável</h2>
+    <p>14.1. Além do valor fixo, o CONTRATADO receberá 5% sobre o lucro líquido das vendas geradas pelas campanhas de tráfego pago.</p>
+    <p>14.2. Considera-se lucro líquido: faturamento menos custo do produto, taxas e custos diretos da venda.</p>
+    <p>14.3. Apenas vendas rastreadas (pixel, UTMs ou similares) serão consideradas.</p>
+    <p>14.4. O pagamento será feito até o dia 5 do mês seguinte. Sem rastreamento confiável, não há pagamento variável.</p>
+
+    <p style="margin-top:20px">Rio de Janeiro, ${dataAssinatura}.</p>
+
+    <div class="sig-block">
+      <div>
+        <div class="sig-line"></div>
+        <div class="sig-name">CONTRATANTE</div>
+        <div class="sig-role">${f.representante}</div>
+        <div class="sig-role">${f.razaoSocial}</div>
+      </div>
+      <div>
+        <div class="sig-line"></div>
+        <div class="sig-name">CONTRATADO</div>
+        <div class="sig-role">Grégory Anselmo Almeida</div>
+        <div class="sig-role">Agência Navena</div>
+      </div>
+    </div>
+  `;
+}
+
+/* ============ Navegação entre páginas ============ */
+function setStep(n){
+  [1,2,3].forEach(i=>{
+    const el=document.getElementById('step'+i+'El');
+    el.className='step'+(i<n?' done':i===n?' active':'');
+  });
+}
+
+function getFormData(){
+  return {
+    razaoSocial: document.getElementById('f_razaoSocial').value.trim(),
+    cnpj:        document.getElementById('f_cnpj').value.trim(),
+    email:       document.getElementById('f_email').value.trim(),
+    endereco:    document.getElementById('f_endereco').value.trim(),
+    representante: document.getElementById('f_representante').value.trim(),
+    nacionalidade: document.getElementById('f_nacionalidade').value.trim(),
+    profissao:   document.getElementById('f_profissao').value.trim(),
+    cpfRep:      document.getElementById('f_cpfRep').value.trim(),
+    estadoCivil: document.getElementById('f_estadoCivil').value,
+    cidade:      document.getElementById('f_cidade').value.trim(),
+    dataAssinatura: document.getElementById('f_dataAssinatura').value,
+  };
+}
+
+document.getElementById('btnGerarContrato').addEventListener('click',()=>{
+  const f = getFormData();
+  const erros=[];
+  if(!f.razaoSocial) erros.push('Razão Social / Nome');
+  if(!f.cnpj)        erros.push('CNPJ / CPF');
+  if(!f.email)       erros.push('E-mail');
+  if(!f.endereco)    erros.push('Endereço');
+  if(!f.representante) erros.push('Nome do Representante');
+  if(!f.cpfRep)      erros.push('CPF do Representante');
+  if(erros.length){alert('Preencha os campos obrigatórios:\n\n• '+erros.join('\n• '));return;}
+
+  document.getElementById('contractDoc').innerHTML = gerarContratoHTML(f);
+  document.getElementById('page-form').style.display='none';
+  document.getElementById('page-contrato').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+  setStep(2);
+});
+
+function voltarForm(){
+  document.getElementById('page-contrato').style.display='none';
+  document.getElementById('page-form').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+  setStep(1);
+}
+document.getElementById('btnVoltarForm').addEventListener('click',voltarForm);
+document.getElementById('btnVoltarForm2').addEventListener('click',voltarForm);
+
+/* ============ Autentique Integration ============ */
+async function enviarParaAutentique(contractHTML, clienteNome, clienteEmail){
+  const token = contratoData.token || '';
+  const gregEmail = contratoData.gregEmail || 'anselmogregory161@gmail.com';
+
+  if(!token){
+    return {ok:false, msg:'Token do Autentique não configurado. Configure em Contratos → Configurações no sistema Navena.'};
+  }
+  if(!clienteEmail){
+    return {ok:false, msg:'E-mail do cliente não informado. Verifique o campo e-mail no formulário.'};
+  }
+
+  const MUTATION = `
+    mutation CreateDocumentMutation($document: DocumentInput!, $signers: [SignerInput!]!, $file: Upload!) {
+      createDocument(document: $document, signers: $signers, file: $file) {
+        id
+        name
+        created_at
+        signatures {
+          public_id
+          name
+          email
+          link
+          action { name }
+        }
+      }
+    }
+  `;
+
+  const variables = {
+    document: { name: `Contrato Navena · ${clienteNome}` },
+    signers: [
+      { email: clienteEmail, action: 'SIGN', name: clienteNome },
+      { email: gregEmail,    action: 'SIGN', name: 'Grégory Anselmo — Navena' }
+    ],
+    file: null
+  };
+
+  // HTML → Blob
+  const blob = new Blob([contractHTML], {type:'text/html'});
+
+  // Multipart conforme spec GraphQL Upload
+  const formData = new FormData();
+  formData.append('operations', JSON.stringify({query: MUTATION, variables}));
+  formData.append('map', JSON.stringify({"0":["variables.file"]}));
+  formData.append('0', blob, 'contrato.html');
+
+  try{
+    const res = await fetch('https://api.autentique.com.br/v2/graphql', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` },
+      body: formData
+    });
+    const json = await res.json();
+    if(json.errors){
+      return {ok:false, msg: json.errors.map(e=>e.message).join('; ')};
+    }
+    const doc = json.data?.createDocument;
+    const sigs = doc?.signatures || [];
+    return {ok:true, docId: doc?.id, signatures: sigs};
+  } catch(err){
+    if(err.name === 'TypeError' && err.message.includes('fetch')){
+      return {ok:false, msg:'Erro de conexão (CORS ou sem internet). O contrato foi gerado — você pode imprimir/salvar como PDF e enviar manualmente para assinatura.'};
+    }
+    return {ok:false, msg: err.message};
+  }
+}
+
+async function confirmar(){
+  const f = getFormData();
+  const btnC  = document.getElementById('btnConfirmar');
+  const btnC2 = document.getElementById('btnConfirmar2');
+  btnC.disabled=true; btnC2.disabled=true;
+  btnC.textContent='Enviando…'; btnC2.textContent='Enviando…';
+
+  const contractHTML = document.getElementById('contractDoc').innerHTML;
+  const fullHTML = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>Contrato Navena</title></head><body style="font-family:Arial,sans-serif;max-width:900px;margin:40px auto;padding:20px;color:#1a2440;line-height:1.8">${contractHTML}</body></html>`;
+
+  const result = await enviarParaAutentique(fullHTML, f.razaoSocial, f.email);
+
+  const code = (contratoData.id||'NAVENA').toUpperCase().slice(-6)+'-'+Date.now().toString(36).toUpperCase().slice(-4);
+  document.getElementById('confCode').textContent = code;
+  document.getElementById('page-contrato').style.display='none';
+  document.getElementById('page-confirmacao').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+  setStep(3);
+
+  const resultBox = document.getElementById('autentiqueResult');
+  if(result.ok){
+    const sigLinks = result.signatures.map(s=>
+      `<div style="margin-top:8px;padding:10px 14px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px">
+        <strong>${s.name||s.email}</strong> (${s.email})<br>
+        <a href="${s.link}" target="_blank" style="color:#16a34a;font-size:13px">🔗 Link de assinatura →</a>
+      </div>`
+    ).join('');
+    resultBox.innerHTML = `
+      <div style="padding:16px;background:#f0fdf4;border:1px solid #86efac;border-radius:10px">
+        <strong style="color:#166534">✅ Contrato enviado para assinatura no Autentique!</strong>
+        <p style="font-size:13px;color:#166534;margin-top:6px">Cada signatário receberá um e-mail para assinar digitalmente.</p>
+        ${sigLinks}
+      </div>`;
+  } else {
+    resultBox.innerHTML = `
+      <div style="padding:16px;background:#fef2f2;border:1px solid #fca5a5;border-radius:10px">
+        <strong style="color:#991b1b">⚠ Não foi possível enviar automaticamente</strong>
+        <p style="font-size:13px;color:#7f1d1d;margin-top:6px">${result.msg}</p>
+        <p style="font-size:13px;color:#7f1d1d;margin-top:8px">✅ O contrato foi gerado com sucesso. Use o botão <strong>Imprimir / Salvar PDF</strong> acima para baixar.</p>
+      </div>`;
+  }
+
+  btnC.disabled=false; btnC2.disabled=false;
+  btnC.textContent='✍ Enviar para Assinatura'; btnC2.textContent='✍ Enviar para Assinatura';
+}
+document.getElementById('btnConfirmar').addEventListener('click',confirmar);
+document.getElementById('btnConfirmar2').addEventListener('click',confirmar);
+</script>
+</body>
+</html>
