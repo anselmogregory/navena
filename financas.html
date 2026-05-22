@@ -1026,7 +1026,7 @@ document.getElementById('setupSaveBtn').addEventListener('click', async function
 </div>
 
 <!-- LOADING OVERLAY -->
-<div id="appLoader" style="display:none;position:fixed;inset:0;background:rgba(255,255,255,.92);z-index:99999;flex-direction:column;align-items:center;justify-content:center;gap:16px">
+<div id="appLoader" style="display:none;position:fixed;inset:0;background:rgba(255,255,255,.92);z-index:99999;flex-direction:column;align-items:center;justify-content:center;gap:16px;pointer-events:none">
   <div style="width:48px;height:48px;border:4px solid #e2e8f0;border-top-color:#1e3a5f;border-radius:50%;animation:spin .8s linear infinite"></div>
   <div style="font-size:15px;font-weight:600;color:#1e3a5f">Carregando dados...</div>
 </div>
@@ -2241,12 +2241,17 @@ document.getElementById('pf_salvar').addEventListener('click',()=>{
   }
   const loader = document.getElementById('appLoader');
   if(loader) loader.style.display = 'flex';
-  await _loadFromGitHub();
-  refreshStateFromStorage();
-  applyTheme(state.profile.theme || 'light');
-  renderProfile();
-  renderAll();
-  if(loader) loader.style.display = 'none';
+  try {
+    await _loadFromGitHub();
+    refreshStateFromStorage();
+    applyTheme(state.profile.theme || 'light');
+    renderProfile();
+    renderAll();
+  } catch(e) {
+    console.error('Init error:', e);
+  } finally {
+    if(loader) loader.style.display = 'none';
+  }
 })();
 
 /* ----------- LTV Helpers ----------- */
@@ -2401,4 +2406,4 @@ document.getElementById('cc_salvar').addEventListener('click',()=>{
   const duracaoMeses=+document.getElementById('cc_duracao').value||3;
   const dataInicio=document.getElementById('cc_dataInicio').value;
   if(!nome){alert('Informe o nome do cliente.');return;}
-  if(!valor){alert('Informe o v
+  if(!valor){alert('Informe o v        
